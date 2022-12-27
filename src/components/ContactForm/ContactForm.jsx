@@ -1,44 +1,35 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Component } from 'react';
 import { IconContext } from 'react-icons';
 import { IoMdPerson } from 'react-icons/io';
 import { BsTelephoneFill } from 'react-icons/bs';
 import { Form, Label, Input, Button, Wrap } from './ContactForm.styled';
 
-export class ContactForm extends Component {
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
+export const ContactForm = ({onSubmit}) => {
+  const [name, setName] = useState("");
+  const [number, setNumber] = useState("");
+
+  const handleInputChange = (type, value) => {
+    switch (type) {
+      case "name":
+        setName(value);
+        break;
+      case "number":
+        setNumber(value);
+        break;
+      default:
+        return;
+    }
   };
 
-  state = {
-    name: '',
-    number: '',
-  };
-
-  handleInputChange = (type, value) => {
-    this.setState({ [type]: value });
-  };
-
-  handleFormSubmit = evt => {
-    const { name, number } = this.state;
-    const { onSubmit } = this.props;
-
+  const handleFormSubmit = evt => {
     onSubmit({ evt, name, number });
-    this.resetForm();
+    setName("");
+    setNumber("");
   };
 
-  resetForm = () => {
-    this.setState({
-      name: '',
-      number: '',
-    });
-  };
-
-  render() {
-    const { name, number } = this.state;
-
-    return (
-      <Form onSubmit={this.handleFormSubmit}>
+  return (
+      <Form onSubmit={handleFormSubmit}>
         <Label>
           <Wrap>
             <IconContext.Provider
@@ -51,7 +42,7 @@ export class ContactForm extends Component {
             Name
           </Wrap>
           <Input
-            onChange={evt => this.handleInputChange('name', evt.target.value)}
+            onChange={evt => handleInputChange('name', evt.target.value)}
             type="text"
             name="name"
             value={name}
@@ -73,7 +64,7 @@ export class ContactForm extends Component {
             Phone
           </Wrap>
           <Input
-            onChange={evt => this.handleInputChange('number', evt.target.value)}
+            onChange={evt => handleInputChange('number', evt.target.value)}
             type="tel"
             name="number"
             value={number}
@@ -86,5 +77,8 @@ export class ContactForm extends Component {
         <Button type="submit">Add contact</Button>
       </Form>
     );
-  }
+}
+
+ContactForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 }
